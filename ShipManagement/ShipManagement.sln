@@ -1,0 +1,16 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ShipManagement", "ShipManagement\ShipManagement.csproj", "{D16C1507-1AF1-4886-968E-506F7F726A2B}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{D16C1507-1AF1-4886-968E-506F7F726A2B}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D16C1507-1AF1-4886-968E-506F7F726A2B}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D16C1507-1AF1-4886-968E-506F7F726A2B}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D16C1507-1AF1-4886-968E-506F7F726A2B}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
