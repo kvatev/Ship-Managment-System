@@ -1,0 +1,45 @@
+﻿@model IEnumerable<ShipManagement.Models.Users.UserRoleInfo>
+
+<h2>Manage Users</h2>
+
+<table class="table">
+    <thead>
+    <tr>
+        <th>Email</th>
+        <th>Roles</th>
+        <th>Actions</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var user in Model)
+    {
+    <tr>
+        <td>@user.Email</td>
+        <td>
+            @if (user.Roles.Any())
+            {
+            <ul>
+                @foreach (var role in user.Roles)
+                {
+                <li>@role</li>
+                }
+            </ul>
+            }
+            else
+            {
+            <span>No Roles Assigned</span>
+            }
+        </td>
+        <td>
+            <a asp-action="Edit" asp-route-id="@user.UserId">Edit</a> |
+            <a asp-action="ManageUserRoles" asp-route-userId="@user.UserId">Manage Roles</a>
+            <form asp-action="Delete" asp-route-id="@user.UserId" method="post" style="display:inline;">
+                <button type="submit" class="btn btn-link">Delete</button>
+            </form>
+        </td>
+    </tr>
+    }
+    </tbody>
+</table>
+
+<a asp-action="Create" class="btn btn-primary">Create New User</a>
