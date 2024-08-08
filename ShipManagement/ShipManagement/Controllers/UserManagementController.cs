@@ -3,7 +3,6 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using ShipManagement.Models.Roles;
-using ShipManagement.Models.UserManagement;
 using ShipManagement.Models.Users;
 
 namespace ShipManagement.Controllers
@@ -19,21 +18,22 @@ namespace ShipManagement.Controllers
             _userManager = userManager;
             _roleManager = roleManager;
         }
-
-        // Action to list all users
+        
         public async Task<IActionResult> Index()
         {
-            var users = _userManager.Users.ToList(); // Fetch all users
+            var users = _userManager.Users.ToList();
 
-            var userRoleInfos = new List<UserRoleInfo>();
+            var userRoleInfos = new List<UserViewModel>();
 
             foreach (var user in users)
             {
                 var roles = await _userManager.GetRolesAsync(user);
-                userRoleInfos.Add(new UserRoleInfo
+                userRoleInfos.Add(new UserViewModel
                 {
-                    UserId = user.Id,
+                    Id = user.Id,
+                    Username = user.UserName,
                     Email = user.Email,
+                    PhoneNumber = user.PhoneNumber,
                     Roles = roles
                 });
             }
@@ -41,8 +41,6 @@ namespace ShipManagement.Controllers
             return View(userRoleInfos);
         }
 
-
-        // Action to create a new user
         [HttpGet]
         public IActionResult Create()
         {
@@ -54,7 +52,8 @@ namespace ShipManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email };
+                var user = new IdentityUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber};
+                
                 var result = await _userManager.CreateAsync(user, model.Password);
 
                 if (result.Succeeded)
@@ -69,7 +68,6 @@ namespace ShipManagement.Controllers
             return View(model);
         }
 
-        // Action to edit user details
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
@@ -78,37 +76,41 @@ namespace ShipManagement.Controllers
             {
                 return NotFound();
             }
-            var model = new EditUserViewModel { Id = user.Id, Email = user.Email };
+            var model = new EditUserViewModel() { Id = user.Id, Username = user.UserName, PhoneNumber = user.PhoneNumber};
+            
             return View(model);
         }
 
         [HttpPost]
         public async Task<IActionResult> Edit(EditUserViewModel model)
         {
-            if (ModelState.IsValid)
+            if (!ModelState.IsValid)
             {
-                var user = await _userManager.FindByIdAsync(model.Id);
-                if (user == null)
-                {
-                    return NotFound();
-                }
-                user.Email = model.Email;
-                user.UserName = model.Email;
-
-                var result = await _userManager.UpdateAsync(user);
-                if (result.Succeeded)
-                {
-                    return RedirectToAction("Index");
-                }
-                foreach (var error in result.Errors)
-                {
-                    ModelState.AddModelError(string.Empty, error.Description);
-                }
+                return View(model);
             }
+
+            var user = await _userManager.FindByIdAsync(model.Id);
+            if (user == null)
+            {
+                return NotFound("User not found.");
+            }
+            user.UserName = model.Username;
+            user.PhoneNumber = model.PhoneNumber;
+
+            var result = await _userManager.UpdateAsync(user);
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index"); 
+            }
+            
+            foreach (var error in result.Errors)
+            {
+                ModelState.AddModelError("", error.Description);
+            }
+
             return View(model);
         }
-
-        // Action to delete a user
+        
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
@@ -148,13 +150,13 @@ namespace ShipManagement.Controllers
 
             var model = new UserRolesViewModel
             {
-                UserId = user.Id,
+                Id = user.Id,
                 Email = user.Email,
                 Roles = userRoles,
-                AllRoles = allRoles.Select(r => new RoleViewModel
+                AllRoles = allRoles.Select(role => new RoleViewModel
                 {
-                    RoleName = r.Name,
-                    Selected = userRoles.Contains(r.Name)
+                    RoleName = role.Name,
+                    Selected = userRoles.Contains(role.Name)
                 }).ToList()
             };
 
@@ -164,38 +166,34 @@ namespace ShipManagement.Controllers
         [HttpPost]
         public async Task<IActionResult> ManageUserRoles(UserRolesViewModel model)
         {
-            if (model == null || string.IsNullOrEmpty(model.UserId))
+            if (model == null || string.IsNullOrEmpty(model.Id))
             {
                 return BadRequest("Invalid model or user ID.");
             }
 
-            var user = await _userManager.FindByIdAsync(model.UserId);
+            var user = await _userManager.FindByIdAsync(model.Id);
             if (user == null)
             {
                 return NotFound("User not found.");
             }
 
             var userRoles = await _userManager.GetRolesAsync(user);
-            var selectedRoles = model.AllRoles.Where(r => r.Selected).Select(r => r.RoleName).ToList();
 
-            // Roles to add and remove
-            var rolesToAdd = selectedRoles.Except(userRoles).ToList();
-            var rolesToRemove = userRoles.Except(selectedRoles).ToList();
-
-            // Add roles
-            var addResult = await _userManager.AddToRolesAsync(user, rolesToAdd);
-            if (!addResult.Succeeded)
-            {
-                ModelState.AddModelError("", "Failed to add roles.");
-                return View(model);
-            }
-
-            // Remove roles
-            var removeResult = await _userManager.RemoveFromRolesAsync(user, rolesToRemove);
+            var removeResult = await _userManager.RemoveFromRolesAsync(user, userRoles);
             if (!removeResult.Succeeded)
             {
                 ModelState.AddModelError("", "Failed to remove roles.");
                 return View(model);
+            }
+
+            if (!string.IsNullOrEmpty(model.SelectedRole))
+            {
+                var addResult = await _userManager.AddToRoleAsync(user, model.SelectedRole);
+                if (!addResult.Succeeded)
+                {
+                    ModelState.AddModelError("", "Failed to add role.");
+                    return View(model);
+                }
             }
 
             return RedirectToAction("Index");
