@@ -7,7 +7,7 @@ using ShipManagement.Models.Users;
 
 namespace ShipManagement.Controllers
 {
-    //[Authorize(Roles = "Admin")]
+    [Authorize(Roles = "Адмирал")]
     public class UserManagementController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
