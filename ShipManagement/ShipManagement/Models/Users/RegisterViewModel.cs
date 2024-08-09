@@ -15,7 +15,6 @@ namespace ShipManagement.Models.Users
         
         [Required]
         [DataType(DataType.Password)]
-        
         public string Password { get; set; }
     }
 }
