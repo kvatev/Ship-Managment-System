@@ -28,6 +28,15 @@ public class TaskViewModel
     public DateTime AssignedDate { get; set; } 
 
     public DateTime? DueDate { get; set; }
+    
+    public TaskPriority Priority { get; set; }
 
     public bool IsCompleted { get; set; } = false;
+}
+
+public enum TaskPriority
+{
+    Low,
+    Medium,
+    High
 }

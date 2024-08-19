@@ -22,6 +22,12 @@ public class Program
             .AddEntityFrameworkStores<ShipManagementDbContext>();
         
         builder.Services.AddControllersWithViews();
+        
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("CanAssignTasks", policy =>
+                policy.RequireRole("Адмирал", "Вицеадмирал"));
+        });
 
         var app = builder.Build();
 

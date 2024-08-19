@@ -48,6 +48,7 @@ namespace ShipManagement.Controllers
         }
 
         // GET: Task/Create
+        [Authorize(Policy = "CanAssignTasks")]
         public IActionResult Create()
         {
             ViewData["AssignedById"] = new SelectList(_context.Users, "Id", "UserName");
@@ -56,9 +57,10 @@ namespace ShipManagement.Controllers
         }
 
         // POST: Task/Create
+        [Authorize(Policy = "CanAssignTasks")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Description,AssignedById,AssignedToId,AssignedDate,DueDate,IsCompleted")] TaskViewModel taskViewModel)
+        public async Task<IActionResult> Create([Bind("Id,Title,Description,AssignedById,AssignedToId,AssignedDate,DueDate,Priority,IsCompleted")] TaskViewModel taskViewModel)
         {
             //if (ModelState.IsValid)
             {
@@ -71,8 +73,9 @@ namespace ShipManagement.Controllers
             ViewData["AssignedToId"] = new SelectList(_context.Users, "Id", "UserName", taskViewModel.AssignedToId);
             return View(taskViewModel);
         }
-        [Authorize]
+        
         // GET: Task/Edit/5
+        [Authorize(Policy = "CanAssignTasks")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -91,10 +94,10 @@ namespace ShipManagement.Controllers
         }
 
         // POST: Task/Edit/5
-        [Authorize]
+        [Authorize(Policy = "CanAssignTasks")]
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,AssignedById,AssignedToId,AssignedDate,DueDate,IsCompleted")] TaskViewModel taskViewModel)
+        public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,AssignedById,AssignedToId,AssignedDate,DueDate,Priority,IsCompleted")] TaskViewModel taskViewModel)
         {
             if (id != taskViewModel.Id)
             {
@@ -127,7 +130,7 @@ namespace ShipManagement.Controllers
         }
 
         // GET: Task/Delete/5
-        [Authorize]
+        [Authorize(Policy = "CanAssignTasks")]
         public async Task<IActionResult> Delete(Guid? id)
         {
             if (id == null)
@@ -148,7 +151,7 @@ namespace ShipManagement.Controllers
         }
 
         // POST: Task/Delete/5
-        [Authorize]
+        [Authorize(Policy = "CanAssignTasks")]
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(Guid id)
