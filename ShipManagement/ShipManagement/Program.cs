@@ -22,6 +22,12 @@ public class Program
             .AddEntityFrameworkStores<ShipManagementDbContext>();
         
         builder.Services.AddControllersWithViews();
+        
+        builder.Services.AddAuthorization(options =>
+        {
+            options.AddPolicy("CanAssignTasks", policy =>
+                policy.RequireRole("Адмирал", "Вицеадмирал"));
+        });
 
         var app = builder.Build();
 
@@ -55,7 +61,7 @@ public class Program
             
             var roles = new[]
             {
-                "Admiral","Адмирал", "Вицеадмирал", "Контраадмирал", "Флотилен адмирал", "Капитан ранг I", "Капитан ранг II", "Капитан ранг III",
+                "Адмирал", "Вицеадмирал", "Контраадмирал", "Флотилен адмирал", "Капитан ранг I", "Капитан ранг II", "Капитан ранг III",
                 "Капитан-лейтенант", "Старши лейтенант", "Лейтенант", "Офицерски кандидат", "Мичман", "Главен старшина", "Старшина I степен", "Старшина II степен", "Старши матрос", "Матрос"
             };
             
