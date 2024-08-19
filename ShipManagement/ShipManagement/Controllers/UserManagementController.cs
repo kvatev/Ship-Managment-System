@@ -7,7 +7,7 @@ using ShipManagement.Models.Users;
 
 namespace ShipManagement.Controllers
 {
-    [Authorize(Roles = "Адмирал")]
+    //[Authorize(Roles = "Адмирал")]
     public class UserManagementController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -52,7 +52,7 @@ namespace ShipManagement.Controllers
         {
             if (ModelState.IsValid)
             {
-                var user = new IdentityUser { UserName = model.Email, Email = model.Email, PhoneNumber = model.PhoneNumber};
+                var user = new IdentityUser { UserName = model.Username, Email = model.Email, PhoneNumber = model.PhoneNumber};
                 
                 var result = await _userManager.CreateAsync(user, model.Password);
 

@@ -11,7 +11,7 @@ using ShipManagement.Data;
 
 namespace ShipManagement.Data.Migrations
 {
-    [DbContext(typeof(ApplicationDbContext))]
+    [DbContext(typeof(ShipManagementDbContext))]
     [Migration("20240804234608_sqllitet2sqlserver")]
     partial class sqllitet2sqlserver
     {
