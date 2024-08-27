@@ -26,7 +26,7 @@ public class Program
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("CanAssignTasks", policy =>
-                policy.RequireRole("Адмирал", "Вицеадмирал"));
+                policy.RequireRole("Адмирал", "Вицеадмирал","Контраадмирал", "Флотилен адмирал"));
         });
 
         var app = builder.Build();

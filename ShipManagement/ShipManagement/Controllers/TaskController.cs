@@ -1,4 +1,6 @@
+using System.Security.Claims;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -10,6 +12,7 @@ namespace ShipManagement.Controllers
     [Authorize]
     public class TaskController : Controller
     {
+        private readonly UserManager<IdentityUser> _userManager;
         private readonly ShipManagementDbContext _context;
 
         public TaskController(ShipManagementDbContext context)
@@ -62,16 +65,11 @@ namespace ShipManagement.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Title,Description,AssignedById,AssignedToId,AssignedDate,DueDate,Priority,IsCompleted")] TaskViewModel taskViewModel)
         {
-            //if (ModelState.IsValid)
-            {
-                taskViewModel.Id = Guid.NewGuid();
-                _context.Add(taskViewModel);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["AssignedById"] = new SelectList(_context.Users, "Id", "UserName", taskViewModel.AssignedById);
-            ViewData["AssignedToId"] = new SelectList(_context.Users, "Id", "UserName", taskViewModel.AssignedToId);
-            return View(taskViewModel);
+            taskViewModel.Id = Guid.NewGuid();
+            taskViewModel.AssignedById = User.FindFirstValue(ClaimTypes.NameIdentifier);
+            _context.Add(taskViewModel);
+            await _context.SaveChangesAsync();
+            return RedirectToAction(nameof(Index));
         }
         
         // GET: Task/Edit/5

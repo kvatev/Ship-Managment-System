@@ -5,56 +5,55 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>Details</h1>
+<h1>Задачи</h1><hr />
+<h4>Подробности</h4>
 
 <div>
-    <h4>TaskViewModel</h4>
-    <hr />
     <dl class="row">
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Title)
+            Заглавие
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Title)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Description)
+            Описание
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Description)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AssignedBy)
+            Назначена от
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AssignedBy.Id)
+            @Html.DisplayFor(model => model.AssignedBy.UserName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AssignedTo)
+            Назначена на
         </dt>
         <dd class = "col-sm-10">
-            @Html.DisplayFor(model => model.AssignedTo.Id)
+            @Html.DisplayFor(model => model.AssignedTo.UserName)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.AssignedDate)
+            Дата на назначаване
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.AssignedDate)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.DueDate)
+            Дата на приключване
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.DueDate)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.Priority)
+            Приоритет
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.Priority)
         </dd>
         <dt class = "col-sm-2">
-            @Html.DisplayNameFor(model => model.IsCompleted)
+            Статус
         </dt>
         <dd class = "col-sm-10">
             @Html.DisplayFor(model => model.IsCompleted)
@@ -62,6 +61,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model?.Id">Edit</a> |
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Edit" asp-route-id="@Model?.Id">Редактирай</a> |
+    <a asp-action="Index">Върни се към началото</a>
 </div>

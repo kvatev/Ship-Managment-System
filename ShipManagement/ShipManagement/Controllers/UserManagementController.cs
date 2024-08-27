@@ -7,7 +7,7 @@ using ShipManagement.Models.Users;
 
 namespace ShipManagement.Controllers
 {
-    //[Authorize(Roles = "Адмирал")]
+    [Authorize]
     public class UserManagementController : Controller
     {
         private readonly UserManager<IdentityUser> _userManager;
@@ -40,13 +40,15 @@ namespace ShipManagement.Controllers
 
             return View(userRoleInfos);
         }
-
+        
+        [Authorize(Policy = "CanAssignTasks")]
         [HttpGet]
         public IActionResult Create()
         {
             return View();
         }
-
+        
+        [Authorize(Policy = "CanAssignTasks")]
         [HttpPost]
         public async Task<IActionResult> Create(RegisterViewModel model)
         {
@@ -67,7 +69,6 @@ namespace ShipManagement.Controllers
             }
             return View(model);
         }
-
         [HttpGet]
         public async Task<IActionResult> Edit(string id)
         {
@@ -98,6 +99,7 @@ namespace ShipManagement.Controllers
             user.PhoneNumber = model.PhoneNumber;
 
             var result = await _userManager.UpdateAsync(user);
+            
             if (result.Succeeded)
             {
                 return RedirectToAction("Index"); 
@@ -111,6 +113,7 @@ namespace ShipManagement.Controllers
             return View(model);
         }
         
+        [Authorize(Policy = "CanAssignTasks")]
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
@@ -131,6 +134,7 @@ namespace ShipManagement.Controllers
             return RedirectToAction("Index");
         }
         
+        [Authorize(Policy = "CanAssignTasks")]
         [HttpGet]
         public async Task<IActionResult> ManageUserRoles(string userId)
         {
@@ -163,6 +167,7 @@ namespace ShipManagement.Controllers
             return View(model);
         }
         
+        [Authorize(Policy = "CanAssignTasks")]
         [HttpPost]
         public async Task<IActionResult> ManageUserRoles(UserRolesViewModel model)
         {
@@ -197,6 +202,22 @@ namespace ShipManagement.Controllers
             }
 
             return RedirectToAction("Index");
+        }
+        
+        public async Task<IActionResult> Details(string id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+
+            var user = await _userManager.FindByIdAsync(id);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            return View(user); // Pass the user to the view
         }
     }
 }

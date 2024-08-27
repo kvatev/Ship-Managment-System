@@ -1,54 +1,59 @@
 @using Microsoft.AspNetCore.Mvc.TagHelpers
 @using ShipManagement.Models.Tasks
 @model ShipManagement.Models.Tasks.TaskViewModel
+@using Microsoft.AspNetCore.Identity
 
 @{
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
+
+    bool disableEdit = true;
+    bool displayMessage = false;
+    if (((User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))))
+    {
+        disableEdit = false;
+        displayMessage = true;
+    }
 }
 
-<h1>Edit</h1>
 
-<h4>TaskViewModel</h4>
-<hr />
+
+<h1>Задачи</h1><hr />
+<h4>Редактиране на задачи</h4>
+<p hidden="@displayMessage" style="color: red">Не може да редактирате тази задача! Може само да променяте нейният статут</p>
 <div class="row">
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
-                <label asp-for="Title" class="control-label"></label>
-                <input asp-for="Title" class="form-control" />
+                <label asp-for="Title" class="control-label">Заглавие</label>
+                <input asp-for="Title" class="form-control" disabled="@disableEdit"/>
                 <span asp-validation-for="Title" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Description" class="control-label"></label>
-                <input asp-for="Description" class="form-control" />
+                <label asp-for="Description" class="control-label">Описание</label>
+                <input asp-for="Description" class="form-control" disabled="@disableEdit"/>
                 <span asp-validation-for="Description" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AssignedById" class="control-label"></label>
-                <select asp-for="AssignedById" class="form-control" asp-items="ViewBag.AssignedById"></select>
-                <span asp-validation-for="AssignedById" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AssignedToId" class="control-label"></label>
-                <select asp-for="AssignedToId" class="form-control" asp-items="ViewBag.AssignedToId"></select>
+                <label asp-for="AssignedToId" class="control-label">Назначена на</label>
+                <select asp-for="AssignedToId" class="form-control" asp-items="ViewBag.AssignedToId" disabled="@disableEdit"></select>
                 <span asp-validation-for="AssignedToId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="AssignedDate" class="control-label"></label>
-                <input asp-for="AssignedDate" class="form-control" />
+                <label asp-for="AssignedDate" class="control-label">Дата на назначаване</label>
+                <input asp-for="AssignedDate" class="form-control" disabled="@disableEdit"/>
                 <span asp-validation-for="AssignedDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="DueDate" class="control-label"></label>
-                <input asp-for="DueDate" class="form-control" />
+                <label asp-for="DueDate" class="control-label">Дата на приключване</label>
+                <input asp-for="DueDate" class="form-control" disabled="@disableEdit"/>
                 <span asp-validation-for="DueDate" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <label asp-for="Priority" class="control-label"></label>
-                <select asp-for="Priority" class="form-control">
+                <label asp-for="Priority" class="control-label">Приоритет</label>
+                <select asp-for="Priority" class="form-control" disabled="@disableEdit">
                     @foreach (var priority in Enum.GetValues(typeof(TaskPriority)))
                     {
                     <option value="@priority">@priority</option>
@@ -58,18 +63,18 @@
             </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsCompleted" /> @Html.DisplayNameFor(model => model.IsCompleted)
+                    <input class="form-check-input" asp-for="IsCompleted" /> Задачата е изпълнена
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Save" class="btn btn-primary" />
+                <input type="submit" value="Запази" class="btn btn-primary" />
             </div>
         </form>
     </div>
 </div>
 
 <div>
-    <a asp-action="Index">Back to List</a>
+    <a asp-action="Index">Върни се към началото</a>
 </div>
 
 @section Scripts {

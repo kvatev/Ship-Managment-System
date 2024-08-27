@@ -1,49 +1,116 @@
 ﻿@model IEnumerable<ShipManagement.Models.Users.UserViewModel>
+@using Microsoft.AspNetCore.Identity
+@inject UserManager<IdentityUser> UserManager
 
-<h2>Manage Users</h2>
 
-<table class="table">
-    <thead>
-    <tr>
-        <th>Username</th>
-        <th>Email</th>
-        <th>Phone number</th>
-        <th>Roles</th>
-        <th>Actions</th>
-    </tr>
-    </thead>
-    <tbody>
-    @foreach (var user in Model)
-    {
-    <tr>
-        <td>@user.Username</td>
-        <td>@user.Email</td>
-        <td>@user.PhoneNumber</td>
-        <td>
-            @if (user.Roles.Any())
-            {
-            <ul style="list-style-type: none">
-                @foreach (var role in user.Roles)
-                {
-                <li>@role</li>
-                }
-            </ul>
+
+<html>
+    <head>
+        <style>
+            #tasksTable th {
+                cursor: pointer;
+                padding: 10px;
+                text-align: left;
             }
-            else
-            {
-            <span>No Roles Assigned</span>
+            #tasksTable th.asc::after {
+                content: "▲";
+                margin-left: 5px;
             }
-        </td>
-        <td>
-            <a asp-action="Edit" asp-route-id="@user.Id">Edit</a> |
-            <a asp-action="ManageUserRoles" asp-route-userId="@user.Id">Manage Roles</a>
-            <form asp-action="Delete" asp-route-id="@user.Id" method="post" style="display:inline;">
-                <button type="submit" class="btn btn-link">Delete</button>
-            </form>
-        </td>
-    </tr>
-    }
-    </tbody>
-</table>
 
-<a asp-action="Create" class="btn btn-primary">Create New User</a>
+            #tasksTable th.desc::after {
+                content: "▼";
+                margin-left: 5px;
+            }
+        </style>
+
+        <script>
+            document.addEventListener('DOMContentLoaded', function () {
+                const table = document.querySelector('#tasksTable');
+                const headers = table.querySelectorAll('th');
+                const rows = Array.from(table.querySelectorAll('tbody tr'));
+
+                headers.forEach((header, index) => {
+                    header.addEventListener('click', () => {
+                        const sortDirection = header.classList.contains('asc') ? 'desc' : 'asc';
+                        header.classList.toggle('asc', sortDirection === 'asc');
+                        header.classList.toggle('desc', sortDirection === 'desc');
+
+                        const sortedRows = rows.sort((rowA, rowB) => {
+                            const cellA = rowA.children[index].textContent.trim();
+                            const cellB = rowB.children[index].textContent.trim();
+
+                            return sortDirection === 'asc'
+                                ? cellA.localeCompare(cellB)
+                                : cellB.localeCompare(cellA);
+                        });
+
+                        table.querySelector('tbody').append(...sortedRows);
+                    });
+                });
+            });
+        </script>
+    </head>
+    <body>
+    <h1>Менижиране на потребители</h1>
+    <br/>
+
+    <table id="tasksTable" class="table">
+        <thead>
+
+        <tr>
+            <a><th data-sort="username">Потребителско име</th></a>
+            <th data-sort="email">Електронна поща</th>
+            <th data-sort="phone_number">Телефонен номер</th>
+            <th data-sort="roles">Роля</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var user in Model)
+        {
+            <tr>
+                <td>@user.Username</td>
+                <td>@user.Email</td>
+                <td>@user.PhoneNumber</td>
+                <td>
+                    @if (user.Roles.Any())
+                    {
+                        <ul style="list-style-type: none">
+                            @foreach (var role in user.Roles)
+                            {
+                                <li>@role</li>
+                            }
+                        </ul>
+                    }
+                    else
+                    {
+                        <span>No Roles Assigned</span>
+                    }
+                </td>
+                <td>
+                    @{
+                        var currentUserId = UserManager.GetUserId(User);
+                    }
+                    @if (currentUserId == user.Id || ((User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))))
+                    {
+                        <a asp-action="Edit" asp-route-id="@user.Id">Редактиране</a>
+                    }
+                    @if (User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))
+                    {
+                        <a asp-action="ManageUserRoles" asp-route-userId="@user.Id">Менижирай роля</a>
+                        <form asp-action="Delete" asp-route-id="@user.Id" method="post" style="display:inline;">
+                            <button type="submit" class="btn btn-link">Изтрий</button>
+                        </form>
+                    }
+                </td>
+            </tr>
+        }
+        </tbody>
+    </table>
+    
+        @if (User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))
+            {
+        <a asp-action="Create" class="btn btn-primary">Създай нов потребител</a>
+        }
+    </body>
+</html>

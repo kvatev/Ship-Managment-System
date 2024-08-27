@@ -1,6 +1,8 @@
 ﻿@model ShipManagement.Models.Roles.UserRolesViewModel
 
-<h2>Manage Roles for @Model.Email</h2>
+<h1>Менижиране на потребители</h1>
+<h4>Менижирай роля за @Model.Email</h4>
+<hr/>
 
 <form asp-action="ManageUserRoles" method="post">
     <input type="hidden" asp-for="Id" />
@@ -13,5 +15,5 @@
             </div>
         }
     </div>
-    <button type="submit" class="btn btn-primary">Save</button>
+    <button type="submit" class="btn btn-primary">Запази</button>
 </form>
