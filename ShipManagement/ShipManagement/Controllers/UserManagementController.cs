@@ -91,6 +91,7 @@ namespace ShipManagement.Controllers
             }
 
             var user = await _userManager.FindByIdAsync(model.Id);
+
             if (user == null)
             {
                 return NotFound("User not found.");
