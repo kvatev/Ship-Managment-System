@@ -17,7 +17,12 @@ public class Program
             options.UseSqlServer(connectionString));
         builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
-        builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = true)
+        builder.Services.AddDefaultIdentity<IdentityUser>(options =>
+            {
+                options.SignIn.RequireConfirmedAccount = true;
+                options.User.RequireUniqueEmail = true;
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@+";
+            })
             .AddRoles<IdentityRole>()
             .AddEntityFrameworkStores<ShipManagementDbContext>();
         
@@ -26,7 +31,7 @@ public class Program
         builder.Services.AddAuthorization(options =>
         {
             options.AddPolicy("CanAssignTasks", policy =>
-                policy.RequireRole("Адмирал", "Вицеадмирал","Контраадмирал", "Флотилен адмирал"));
+                policy.RequireRole("Администратор","Адмирал", "Вицеадмирал","Контраадмирал", "Флотилен адмирал"));
         });
 
         var app = builder.Build();
@@ -61,7 +66,7 @@ public class Program
             
             var roles = new[]
             {
-                "Адмирал", "Вицеадмирал", "Контраадмирал", "Флотилен адмирал", "Капитан ранг I", "Капитан ранг II", "Капитан ранг III",
+                "Администратор","Адмирал", "Вицеадмирал", "Контраадмирал", "Флотилен адмирал", "Капитан ранг I", "Капитан ранг II", "Капитан ранг III",
                 "Капитан-лейтенант", "Старши лейтенант", "Лейтенант", "Офицерски кандидат", "Мичман", "Главен старшина", "Старшина I степен", "Старшина II степен", "Старши матрос", "Матрос"
             };
             

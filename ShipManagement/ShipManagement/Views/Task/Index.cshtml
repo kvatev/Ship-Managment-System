@@ -74,7 +74,7 @@
             @foreach (var item in Model)
             {
                 var currentUserId = UserManager.GetUserId(User);
-                if (currentUserId == item.AssignedToId || ((User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))))
+                if (currentUserId == item.AssignedToId || (User.IsInRole("Администратор") || (User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))))
                 {
                     <tr>
                         <td>
@@ -111,7 +111,7 @@
             }
             </tbody>
         </table>
-            @if (User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))
+            @if (User.IsInRole("Администратор") || User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))
             {
                 <a asp-action="Create" class="btn btn-primary">Създай нова задача</a>
             }

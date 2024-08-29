@@ -91,11 +91,11 @@
                     @{
                         var currentUserId = UserManager.GetUserId(User);
                     }
-                    @if (currentUserId == user.Id || ((User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))))
+                    @if (currentUserId == user.Id || ((User.IsInRole("Администратор") || User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))))
                     {
                         <a asp-action="Edit" asp-route-id="@user.Id">Редактиране</a>
                     }
-                    @if (User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))
+                    @if (User.IsInRole("Администратор") || User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))
                     {
                         <a asp-action="ManageUserRoles" asp-route-userId="@user.Id">Менижирай роля</a>
                         <form asp-action="Delete" asp-route-id="@user.Id" method="post" style="display:inline;">
@@ -108,7 +108,7 @@
         </tbody>
     </table>
     
-        @if (User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))
+        @if (User.IsInRole("Администратор") || User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))
             {
         <a asp-action="Create" class="btn btn-primary">Създай нов потребител</a>
         }
