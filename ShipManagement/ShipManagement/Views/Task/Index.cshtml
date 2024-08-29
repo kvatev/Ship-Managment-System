@@ -102,9 +102,9 @@
                             @Html.DisplayFor(modelItem => item.IsCompleted)
                         </td>
                         <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id">Редактирай</a> |
-                            <a asp-action="Details" asp-route-id="@item.Id">Подробности</a> |
-                            <a asp-action="Delete" asp-route-id="@item.Id">Изтрий</a>
+                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-link">Редактирай</a>
+                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-link">Подробности</a>
+                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link">Изтрий</a>
                         </td>
                     </tr>
                 }
