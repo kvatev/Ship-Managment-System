@@ -32,11 +32,13 @@ public class TaskViewModel
     public TaskPriority Priority { get; set; }
 
     public bool IsCompleted { get; set; } = false;
+    
+    public DateTime? CompletedDateTime { get; set; }
 }
 
 public enum TaskPriority
 {
-    Low,
-    Medium,
-    High
+    Нисък,
+    Среден,
+    Висок
 }

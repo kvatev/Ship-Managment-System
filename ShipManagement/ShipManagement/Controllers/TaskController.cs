@@ -106,6 +106,7 @@ namespace ShipManagement.Controllers
             {
                 try
                 {
+                    taskViewModel.AssignedById = User.FindFirstValue(ClaimTypes.NameIdentifier);
                     _context.Update(taskViewModel);
                     await _context.SaveChangesAsync();
                 }
@@ -167,6 +168,55 @@ namespace ShipManagement.Controllers
         private bool TaskViewModelExists(Guid id)
         {
             return _context.Tasks.Any(e => e.Id == id);
+        }
+        
+        // POST: Task/Update
+        public async Task<IActionResult> MarkTaskAsCompleted(Guid taskId)
+        {
+            var task = await _context.Tasks.FindAsync(taskId);
+    
+            if (task != null)
+            {
+                task.IsCompleted = true;
+                task.CompletedDateTime = DateTime.Now;
+
+                await _context.SaveChangesAsync();
+                return Ok();
+            }
+
+            return NotFound();
+        }
+        
+        // GET: Task
+        public async Task<IActionResult> Statistics()
+        {
+            var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+
+            var tasks = await _context.Tasks.Where(t => t.AssignedToId == userId || t.AssignedById == userId).ToListAsync();
+
+            var totalTasks = tasks.Count;
+            var completedTasks = tasks.Count(t => t.IsCompleted);
+            var pendingTasks = totalTasks - completedTasks;
+            
+            var lowPriorityTasks = tasks.Count(t => t.Priority == TaskPriority.Нисък);
+            var mediumPriorityTasks = tasks.Count(t => t.Priority == TaskPriority.Среден);
+            var highPriorityTasks = tasks.Count(t => t.Priority == TaskPriority.Висок);
+
+            // Calculate average completion time for completed tasks
+            var averageCompletionTime = tasks.Where(t => t.CompletedDateTime.HasValue && t.AssignedDate != default(DateTime)).Select(t => (t.CompletedDateTime.Value - t.AssignedDate).TotalDays).DefaultIfEmpty(0).Average();
+
+            var viewModel = new TaskStatisticsViewModel
+            {
+                TotalTasks = totalTasks,
+                CompletedTasks = completedTasks,
+                PendingTasks = pendingTasks,
+                AverageCompletionTime = totalTasks > 0 ? (double?)averageCompletionTime : null,
+                LowPriorityTasks = lowPriorityTasks,
+                MediumPriorityTasks = mediumPriorityTasks,
+                HighPriorityTasks = highPriorityTasks
+            };
+
+            return View(viewModel);
         }
     }
 }
