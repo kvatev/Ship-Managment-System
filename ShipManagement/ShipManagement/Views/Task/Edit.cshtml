@@ -7,16 +7,14 @@
     ViewData["Title"] = "Edit";
     Layout = "~/Views/Shared/_Layout.cshtml";
 
-    bool disableEdit = true;
     bool displayMessage = false;
+    bool disableFields = true;
     if (((User.IsInRole("Администратор") || User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))))
     {
-        disableEdit = false;
+        disableFields = false;
         displayMessage = true;
     }
 }
-
-
 
 <h1>Задачи</h1><hr />
 <h4>Редактиране на задачи</h4>
@@ -25,49 +23,56 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
-            <div class="form-group">
-                <label asp-for="Title" class="control-label">Заглавие</label>
-                <input asp-for="Title" class="form-control" disabled="@disableEdit"/>
-                <span asp-validation-for="Title" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Description" class="control-label">Описание</label>
-                <input asp-for="Description" class="form-control" disabled="@disableEdit"/>
-                <span asp-validation-for="Description" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AssignedToId" class="control-label">Назначена на</label>
-                <select asp-for="AssignedToId" class="form-control" asp-items="ViewBag.AssignedToId" disabled="@disableEdit"></select>
-                <span asp-validation-for="AssignedToId" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="AssignedDate" class="control-label">Дата на назначаване</label>
-                <input asp-for="AssignedDate" class="form-control" disabled="@disableEdit"/>
-                <span asp-validation-for="AssignedDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="DueDate" class="control-label">Дата на приключване</label>
-                <input asp-for="DueDate" class="form-control" disabled="@disableEdit"/>
-                <span asp-validation-for="DueDate" class="text-danger"></span>
-            </div>
-            <div class="form-group">
-                <label asp-for="Priority" class="control-label">Приоритет</label>
-                <select asp-for="Priority" class="form-control" disabled="@disableEdit">
-                    @foreach (var priority in Enum.GetValues(typeof(TaskPriority)))
-                    {
-                    <option value="@priority">@priority</option>
-                    }
-                </select>
-                <span asp-validation-for="Priority" class="text-danger"></span>
-            </div>
+            <input type="hidden" asp-for="Id"/>
+                <div hidden="@disableFields">
+                    <div class="form-group">
+                        <label asp-for="Title" class="control-label">Заглавие</label>
+                        <input asp-for="Title" class="form-control"/>
+                        <span asp-validation-for="Title" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Description" class="control-label">Описание</label>
+                        <input asp-for="Description" class="form-control"/>
+                        <span asp-validation-for="Description" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AssignedById" class="control-label">Назначена от</label>
+                        <select asp-for="AssignedById" class="form-control" asp-items="ViewBag.AssignedById"></select>
+                        <span asp-validation-for="AssignedById" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AssignedToId" class="control-label">Назначена на</label>
+                        <select asp-for="AssignedToId" class="form-control" asp-items="ViewBag.AssignedToId"></select>
+                        <span asp-validation-for="AssignedToId" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="AssignedDate" class="control-label">Дата на назначаване</label>
+                        <input asp-for="AssignedDate" class="form-control"/>
+                        <span asp-validation-for="AssignedDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="DueDate" class="control-label">Дата на приключване</label>
+                        <input asp-for="DueDate" class="form-control"/>
+                        <span asp-validation-for="DueDate" class="text-danger"></span>
+                    </div>
+                    <div class="form-group">
+                        <label asp-for="Priority" class="control-label">Приоритет</label>
+                        <select asp-for="Priority" class="form-control">
+                            @foreach (var priority in Enum.GetValues(typeof(TaskPriority)))
+                            {
+                                <option value="@priority">@priority</option>
+                            }
+                        </select>
+                        <span asp-validation-for="Priority" class="text-danger"></span>
+                    </div>
+                </div>
             <div class="form-group form-check">
                 <label class="form-check-label">
-                    <input class="form-check-input" asp-for="IsCompleted" /> Задачата е изпълнена
+                    <input class="form-check-input" asp-for="IsCompleted"/> Задачата е изпълнена
                 </label>
             </div>
             <div class="form-group">
-                <input type="submit" value="Запази" class="btn btn-primary" />
+                <input type="submit" value="Запази" class="btn btn-primary"/>
             </div>
         </form>
     </div>

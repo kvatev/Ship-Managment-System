@@ -73,7 +73,6 @@ namespace ShipManagement.Controllers
         }
         
         // GET: Task/Edit/5
-        [Authorize(Policy = "CanAssignTasks")]
         public async Task<IActionResult> Edit(Guid? id)
         {
             if (id == null)
@@ -86,46 +85,55 @@ namespace ShipManagement.Controllers
             {
                 return NotFound();
             }
+            
             ViewData["AssignedById"] = new SelectList(_context.Users, "Id", "UserName", taskViewModel.AssignedById);
             ViewData["AssignedToId"] = new SelectList(_context.Users, "Id", "UserName", taskViewModel.AssignedToId);
+            
             return View(taskViewModel);
         }
 
         // POST: Task/Edit/5
-        [Authorize(Policy = "CanAssignTasks")]
         [HttpPost]
-        [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(Guid id, [Bind("Id,Title,Description,AssignedById,AssignedToId,AssignedDate,DueDate,Priority,IsCompleted")] TaskViewModel taskViewModel)
         {
             if (id != taskViewModel.Id)
             {
                 return NotFound();
             }
+            
+            var existingTask = await _context.Tasks.FindAsync(id);
 
-            //if (ModelState.IsValid)
+            if (existingTask == null)
             {
-                try
-                {
-                    taskViewModel.AssignedById = User.FindFirstValue(ClaimTypes.NameIdentifier);
-                    _context.Update(taskViewModel);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!TaskViewModelExists(taskViewModel.Id))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
+                return NotFound();
             }
-            ViewData["AssignedById"] = new SelectList(_context.Users, "Id", "UserName", taskViewModel.AssignedById);
-            ViewData["AssignedToId"] = new SelectList(_context.Users, "Id", "UserName", taskViewModel.AssignedToId);
-            return View(taskViewModel);
+            
+            existingTask.Title = taskViewModel.Title;
+            existingTask.Description = taskViewModel.Description;
+            existingTask.AssignedById = taskViewModel.AssignedById;
+            existingTask.AssignedToId = taskViewModel.AssignedToId;
+            existingTask.AssignedDate = taskViewModel.AssignedDate;
+            existingTask.DueDate = taskViewModel.DueDate;
+            existingTask.Priority = taskViewModel.Priority;
+            existingTask.IsCompleted = taskViewModel.IsCompleted;
+            
+            try
+            {
+                _context.Update(existingTask);
+                await _context.SaveChangesAsync();
+            }
+            catch (DbUpdateConcurrencyException)
+            {
+                if (!TaskViewModelExists(taskViewModel.Id))
+                {
+                    return NotFound();
+                }
+                else
+                {
+                    throw;
+                }
+            }
+            return RedirectToAction(nameof(Index));
         }
 
         // GET: Task/Delete/5
@@ -187,13 +195,21 @@ namespace ShipManagement.Controllers
             return NotFound();
         }
         
-        // GET: Task
+        // GET: Task/Statistics
         public async Task<IActionResult> Statistics()
         {
+            var tasks = new List<TaskViewModel>();
             var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
-
-            var tasks = await _context.Tasks.Where(t => t.AssignedToId == userId || t.AssignedById == userId).ToListAsync();
-
+            
+            if (User.IsInRole("Администратор") || User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))
+            {
+                tasks = await _context.Tasks.ToListAsync();
+            }
+            else
+            {
+                tasks = await _context.Tasks.Where(t => t.AssignedToId == userId || t.AssignedById == userId).ToListAsync();
+            }
+            
             var totalTasks = tasks.Count;
             var completedTasks = tasks.Count(t => t.IsCompleted);
             var pendingTasks = totalTasks - completedTasks;
