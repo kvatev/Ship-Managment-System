@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using ShipManagement.Data;
 using ShipManagement.Models.Roles;
 using ShipManagement.Models.Users;
 
@@ -12,13 +13,16 @@ namespace ShipManagement.Controllers
     {
         private readonly UserManager<IdentityUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly ShipManagementDbContext _context;
 
-        public UserManagementController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager)
+        public UserManagementController(UserManager<IdentityUser> userManager, RoleManager<IdentityRole> roleManager, ShipManagementDbContext context)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _context = context;
         }
         
+        [HttpGet]
         public async Task<IActionResult> Index()
         {
             var users = _userManager.Users.ToList();
@@ -123,6 +127,12 @@ namespace ShipManagement.Controllers
             {
                 return NotFound();
             }
+            
+            if (_context.Tasks.Any(t => t.AssignedToId == user.Id) || _context.Tasks.Any(t => t.AssignedById == user.Id))
+            {
+                return RedirectToAction("ConfirmDelete", new { id = user.Id });
+            }
+            
             var result = await _userManager.DeleteAsync(user);
             if (result.Succeeded)
             {
@@ -132,6 +142,52 @@ namespace ShipManagement.Controllers
             {
                 ModelState.AddModelError(string.Empty, "Error deleting user");
             }
+            return RedirectToAction("Index");
+        }
+        
+        [HttpGet]
+        public async Task<IActionResult> ConfirmDelete(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+            
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var userTasks = _context.Tasks.Where(t => t.AssignedToId == user.Id).ToList();
+            userTasks.AddRange(_context.Tasks.Where(t => t.AssignedById == user.Id).ToList());
+            
+            var viewModel = new ConfirmDeleteViewModel
+            {
+                User = user,
+                Tasks = userTasks
+            };
+
+            return View(viewModel);
+        }
+        
+        [HttpPost]
+        public async Task<IActionResult> ConfirmDeleteConfirmed(string userId)
+        {
+            var user = await _userManager.FindByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound();
+            }
+
+            var userTasks = _context.Tasks.Where(t => t.AssignedToId == user.Id).ToList();
+            userTasks.AddRange(_context.Tasks.Where(t => t.AssignedById == user.Id).ToList());
+            _context.Tasks.RemoveRange(userTasks);
+
+            var result = await _userManager.DeleteAsync(user);
+            if (result.Succeeded)
+            {
+                await _context.SaveChangesAsync();
+                return RedirectToAction("Index");
+            }
+
+            ModelState.AddModelError(string.Empty, "Error deleting user");
             return RedirectToAction("Index");
         }
         
