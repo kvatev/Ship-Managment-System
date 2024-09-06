@@ -55,9 +55,6 @@ public class Program
 
         app.UseAuthorization();
 
-        app.MapControllerRoute(
-            name: "default",
-            pattern: "{controller=Home}/{action=Index}/{id?}");
         app.MapRazorPages();
 
         using (var score = app.Services.CreateScope())
