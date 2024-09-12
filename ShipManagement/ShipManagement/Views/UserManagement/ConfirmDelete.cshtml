@@ -22,7 +22,7 @@
 <form asp-action="ConfirmDeleteConfirmed" method="post">
     <input type="hidden" name="userId" value="@Model.User.Id" />
     <button type="submit" class="btn btn-danger">Да, изтрий този потребител и всички задачи</button>
-    <a href="@Url.Action("Index", "UserManagement")" class="btn btn-secondary">Отказ</a>
+    <a asp-action="Index">Отказ</a>
 </form>
 </body>
 </html>
