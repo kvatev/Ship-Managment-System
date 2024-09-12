@@ -7,12 +7,12 @@
 <form asp-action="ManageUserRoles" method="post">
     <input type="hidden" asp-for="Id" />
     <div>
-        @for (int i = 0; i < Model.AllRoles.Count; i++)
+        @foreach (var role in Model.AllRoles.OrderBy(r => r.RoleName))
         {
-            <div class="form-check">
-                <input class="form-check-input" type="radio" id="role_@i" name="SelectedRole" value="@Model.AllRoles[i].RoleName" @(Model.AllRoles[i].Selected ? "checked" : "") />
-                <label class="form-check-label" for="role_@i">@Model.AllRoles[i].RoleName</label>
-            </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" id="role_@role.RoleName" name="SelectedRole" value="@role.RoleName" @(role.Selected ? "checked" : "") />
+            <label class="form-check-label" for="role_@role.RoleName">@role.RoleName</label>
+        </div>
         }
     </div>
     <button type="submit" class="btn btn-primary">Запази</button>
