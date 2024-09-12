@@ -162,18 +162,18 @@ namespace ShipManagement.Areas.Identity.Pages.Account
             {
                 MailMessage message = new MailMessage();
                 SmtpClient smtpClient = new SmtpClient();
-                message.From = new MailAddress("shipmanagementno@outlook.com");
+                message.From = new MailAddress("kvatevshipmanagement@gmail.com");
                 message.To.Add(email);
                 message.Subject = subject;
                 message.IsBodyHtml = true;
                 message.Body = confirmLink;
 
                 smtpClient.Port = 587;
-                smtpClient.Host = "smtp.office365.com";
+                smtpClient.Host = "smtp.gmail.com";
 
                 smtpClient.EnableSsl = true;
                 smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new NetworkCredential("shipmanagementno@outlook.com", "L33tHaxP@ssw0rd123");
+                smtpClient.Credentials = new NetworkCredential("kvatevshipmanagement@gmail.com", "pszz fczu kxzc wkcx");
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
                 smtpClient.Send(message);
                 return true;
