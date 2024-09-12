@@ -8616,31 +8616,24 @@
     ]
   },
   "packageFolders": {
-    "C:\\Users\\kvate\\.nuget\\packages\\": {},
-    "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages": {}
+    "C:\\Users\\didit\\.nuget\\packages\\": {}
   },
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\kvate\\RiderProjects\\Ship-Managment-System\\ShipManagement\\ShipManagement\\ShipManagement.csproj",
+      "projectUniqueName": "C:\\Users\\didit\\RiderProjects\\Ship-Managment-System\\ShipManagement\\ShipManagement\\ShipManagement.csproj",
       "projectName": "ShipManagement",
-      "projectPath": "C:\\Users\\kvate\\RiderProjects\\Ship-Managment-System\\ShipManagement\\ShipManagement\\ShipManagement.csproj",
-      "packagesPath": "C:\\Users\\kvate\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\kvate\\RiderProjects\\Ship-Managment-System\\ShipManagement\\ShipManagement\\obj\\",
+      "projectPath": "C:\\Users\\didit\\RiderProjects\\Ship-Managment-System\\ShipManagement\\ShipManagement\\ShipManagement.csproj",
+      "packagesPath": "C:\\Users\\didit\\.nuget\\packages\\",
+      "outputPath": "C:\\Users\\didit\\RiderProjects\\Ship-Managment-System\\ShipManagement\\ShipManagement\\obj\\",
       "projectStyle": "PackageReference",
-      "fallbackFolders": [
-        "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
-      ],
       "configFilePaths": [
-        "C:\\Users\\kvate\\AppData\\Roaming\\NuGet\\NuGet.Config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
-        "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        "C:\\Users\\didit\\AppData\\Roaming\\NuGet\\NuGet.Config"
       ],
       "originalTargetFrameworks": [
         "net8.0"
       ],
       "sources": {
-        "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
         "https://api.nuget.org/v3/index.json": {}
       },
       "frameworks": {
