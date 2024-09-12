@@ -3,117 +3,104 @@
 @inject UserManager<IdentityUser> UserManager
 
 @{
-    ViewData["Title"] = "Index";
-    Layout = "~/Views/Shared/_Layout.cshtml";
+ViewData["Title"] = "Index";
+Layout = "~/Views/Shared/_Layout.cshtml";
 }
 <html>
-    <head>
-        <style>
-            #tasksTable th {
-                cursor: pointer;
-                padding: 10px;
-                text-align: left;
-            }
-            #tasksTable th.asc::after {
-                content: "▲";
-                margin-left: 5px;
-            }
+<head>
+    <link rel="stylesheet" href="css/site.css"/>
 
-            #tasksTable th.desc::after {
-                content: "▼";
-                margin-left: 5px;
-            }
-        </style>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const table = document.querySelector('#tasksTable');
+            const headers = table.querySelectorAll('th');
+            const rows = Array.from(table.querySelectorAll('tbody tr'));
 
-        <script>
-            document.addEventListener('DOMContentLoaded', function () {
-                const table = document.querySelector('#tasksTable');
-                const headers = table.querySelectorAll('th');
-                const rows = Array.from(table.querySelectorAll('tbody tr'));
+            headers.forEach((header, index) => {
+                header.addEventListener('click', () => {
+                    const sortDirection = header.classList.contains('asc') ? 'desc' : 'asc';
+                    header.classList.toggle('asc', sortDirection === 'asc');
+                    header.classList.toggle('desc', sortDirection === 'desc');
 
-                headers.forEach((header, index) => {
-                    header.addEventListener('click', () => {
-                        const sortDirection = header.classList.contains('asc') ? 'desc' : 'asc';
-                        header.classList.toggle('asc', sortDirection === 'asc');
-                        header.classList.toggle('desc', sortDirection === 'desc');
+                    const sortedRows = rows.sort((rowA, rowB) => {
+                        const cellA = rowA.children[index].textContent.trim();
+                        const cellB = rowB.children[index].textContent.trim();
 
-                        const sortedRows = rows.sort((rowA, rowB) => {
-                            const cellA = rowA.children[index].textContent.trim();
-                            const cellB = rowB.children[index].textContent.trim();
-
-                            return sortDirection === 'asc'
-                                ? cellA.localeCompare(cellB)
-                                : cellB.localeCompare(cellA);
-                        });
-
-                        table.querySelector('tbody').append(...sortedRows);
+                        return sortDirection === 'asc'
+                            ? cellA.localeCompare(cellB)
+                            : cellB.localeCompare(cellA);
                     });
+
+                    table.querySelector('tbody').append(...sortedRows);
                 });
             });
-        </script>
-    </head>
+        });
+    </script>
+</head>
 
-    <body>
-        <h1>Задачи</h1>
-    
-        <table id="tasksTable" class="table">
-            <thead>
-            <tr>
-                <th>Заглавие</th>
-                <th>Описание</th>
-                <th>Назначена от</th>
-                <th>Назначена на</th>
-                <th>Дата на назначаване</th>
-                <th>Дата на приключване</th>
-                <th>Приоритет</th>
-                <th>Статус</th>
-                <th>Действия</th>
-            </tr>
-            </thead>
-            <tbody>
-            @foreach (var item in Model)
-            {
-                var currentUserId = UserManager.GetUserId(User);
-                if (currentUserId == item.AssignedToId || (User.IsInRole("Администратор") || (User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))))
+<body>
+<h1>Задачи</h1>
+
+<!-- Scrollable container for the table -->
+<div class="scrollable-table">
+    <table id="tasksTable" class="table">
+        <thead>
+        <tr>
+            <th>Заглавие</th>
+            <th>Описание</th>
+            <th>Дата на назначаване</th>
+            <th>Дата на приключване</th>
+            <th>Приоритет</th>
+            <th>Статус</th>
+            <th>Действия</th>
+        </tr>
+        </thead>
+        <tbody>
+        @foreach (var item in Model)
+        {
+        var currentUserId = UserManager.GetUserId(User);
+        if (currentUserId == item.AssignedToId || (User.IsInRole("Администратор") || (User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))))
+        {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => item.Title)
+            </td>
+            <td style="white-space: pre-wrap;">@Html.Raw(item.Description.Replace(Environment.NewLine, "<br />"))
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.AssignedDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.DueDate)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Priority)
+            </td>
+            <td>
+                @if (item.IsCompleted == true)
                 {
-                    <tr>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Title)
-                        </td>
-                        <td style="white-space: pre-wrap;">@Html.Raw(item.Description.Replace(Environment.NewLine, "<br />"))
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AssignedBy.UserName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AssignedTo.UserName)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.AssignedDate)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.DueDate)
-                        </td>
-
-                        <td>
-                            @Html.DisplayFor(modelItem => item.Priority)
-                        </td>
-                        <td>
-                            @Html.DisplayFor(modelItem => item.IsCompleted)
-                        </td>
-                        <td>
-                            <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-link">Редактирай</a>
-                            <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-link">Подробности</a>
-                            <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link">Изтрий</a>
-                        </td>
-                    </tr>
+                    <p>Изпълнена</p>
                 }
-            }
-            </tbody>
-        </table>
-            @if (User.IsInRole("Администратор") || User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))
-            {
-                <a asp-action="Create" class="btn btn-primary">Създай нова задача</a>
-            }
-    </body>
+                else
+                {
+                    <p>Неизпълнена</p>
+                }
+            </td>
+            <td>
+                <a asp-action="Edit" asp-route-id="@item.Id" class="btn btn-link">Редактирай</a>
+                <a asp-action="Details" asp-route-id="@item.Id" class="btn btn-link">Подробности</a>
+                <a asp-action="Delete" asp-route-id="@item.Id" class="btn btn-link">Изтрий</a>
+            </td>
+        </tr>
+        }
+        }
+        </tbody>
+    </table>
+</div>
+
+@if (User.IsInRole("Администратор") || User.IsInRole("Адмирал") || User.IsInRole("Вицеадмирал") || User.IsInRole("Контраадмирал") || User.IsInRole("Флотилен адмирал"))
+{
+<a asp-action="Create" class="btn btn-primary">Създай нова задача</a>
+}
+</body>
 </html>

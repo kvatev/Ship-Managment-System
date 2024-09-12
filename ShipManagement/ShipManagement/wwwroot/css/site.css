@@ -203,3 +203,42 @@ table {
   margin: 0.75rem 0; /* Reduced margin around the table */
   box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Reduced shadow */
 }
+
+
+
+#tasksTable th {
+  cursor: pointer;
+  padding: 10px;
+  text-align: left;
+}
+#tasksTable th.asc::after {
+  content: "▲";
+  margin-left: 5px;
+}
+#tasksTable th.desc::after {
+  content: "▼";
+  margin-left: 5px;
+}
+
+/* Scrollable table styles */
+.scrollable-table {
+  max-height: 400px; /* Adjust this height as needed */
+  overflow-y: auto;
+  display: block;
+}
+
+.scrollable-table table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.scrollable-table tbody {
+  display: block; /* Allows scrolling */
+  width: 100%;
+}
+
+.scrollable-table thead, .scrollable-table tbody tr {
+  display: table; /* Keeps the header and rows aligned */
+  width: 100%;
+  table-layout: fixed; /* Prevents cells from being resized */
+}
