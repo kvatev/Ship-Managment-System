@@ -1,0 +1,83 @@
+﻿@model ShipManagement.Models.Tasks.TaskStatisticsViewModel
+
+<html>
+    <head>
+        <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+        
+    </head>
+    <body>
+        <h1>Статистика</h1>
+
+    <div style="display: inline-block;">
+        <hr/>
+        <h4>Статистика за @User.Identity.Name</h4>
+        <ul>
+            <li>Общ брой задачи: @Model.TotalTasks</li>
+            <li>Брой изпълнени задачи: @Model.CompletedTasks</li>
+            <li>Брой задачи в опашката: @Model.PendingTasks</li>
+            <li>
+                Средно време за изпълнение на задачите:
+                @if (Model.AverageCompletionTime.HasValue)
+                {
+                    @Model.AverageCompletionTime.Value.ToString("F2")
+                }
+                else
+                {
+                    <span>N/A</span>
+                }
+                дни
+            </li>
+        </ul>
+    </div>
+    
+    
+    <div style="display: inline-block; vertical-align: top; width: 20%; margin-left: 5%; margin-top: 1%">
+            <h4>Статистика на изпълнените задачи</h4>
+            <canvas id="taskCompletionChart"></canvas>
+    </div>
+    <div style="display: inline-block; vertical-align: top;  width: 30%; margin-left: 5%; margin-top: 1%">
+            <h4>Статистика приоритетите</h4>
+            <canvas id="taskPriorityChart"></canvas>
+    </div>
+
+        <script>
+            
+            var ctxCompletion = document.getElementById('taskCompletionChart').getContext('2d');
+            var taskCompletionChart = new Chart(ctxCompletion, {
+                type: 'pie',
+                data: {
+                    labels: ['Изпълнени', 'Предстоящи'],
+                    datasets: [{
+                        data: [@Model.CompletedTasks, @Model.PendingTasks],
+                        backgroundColor: ['#36a2eb', '#ff6384'],
+                        hoverBackgroundColor: ['#36a2eb', '#ff6384']
+                    }]
+                }
+            });
+
+            var ctxPriority = document.getElementById('taskPriorityChart').getContext('2d');
+            var taskPriorityChart = new Chart(ctxPriority, {
+                type: 'bar',
+                data: {
+                    labels: ['Нисък', 'Среден', 'Висок'],
+                    datasets: [{
+                        label: 'Брой задачи по приоритет',
+                        data: [@Model.LowPriorityTasks, @Model.MediumPriorityTasks, @Model.HighPriorityTasks],
+                        backgroundColor: ['#ffcd56', '#4bc0c0', '#ff6384'],
+                        borderColor: ['#ffcd56', '#4bc0c0', '#ff6384'],
+                        borderWidth: 1
+                    }]
+                },
+                options: {
+                    scales: {
+                        y: {
+                            beginAtZero: true
+                        }
+                    }
+                }
+            });
+        </script>
+    
+    </body>
+</html>

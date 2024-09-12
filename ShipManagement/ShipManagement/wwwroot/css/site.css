@@ -1,15 +1,45 @@
 html {
-  font-size: 14px;
+  font-size: 13px; /* Slightly smaller base font size */
 }
 
 @media (min-width: 768px) {
   html {
-    font-size: 16px;
+    font-size: 15px; /* Slightly smaller base font size for larger screens */
   }
+}
+
+.navbar-brand img {
+  width: 100px; /* Може да смениш с желания размер */
+  height: auto; /* Автоматично мащабиране спрямо ширината */
+  max-height: 50px; /* Уверява се, че височината не надхвърля зададената стойност */
+  object-fit: contain; /* Поддържа съотношението при нужда */
+}
+
+/* Минимална височина на навигационната лента */
+.navbar {
+  min-height: 60px; /* Фиксирана минимална височина, за да не се разтяга */
+}
+
+/* Центриране на иконата и текста в лентата */
+.navbar-brand {
+  display: flex;
+  align-items: center; /* Центрира вертикално иконата и текста */
+  gap: 10px; /* Разстояние между иконата и текста */
+}
+
+/* Стилизация на контейнера на лентата, за да не се разширява */
+.navbar-brand img {
+  padding: 0; /* Премахване на евентуални допълнителни разстояния около изображението */
+  margin: 0; /* Същото важи и за маргините */
+  background-color: transparent; /* Ако има цвят на фона, премахни го */
 }
 
 .btn:focus, .btn:active:focus, .btn-link.nav-link:focus, .form-control:focus, .form-check-input:focus {
   box-shadow: 0 0 0 0.1rem white, 0 0 0 0.25rem #258cfb;
+}
+
+.nav-item {
+  margin-bottom: 0.4rem; /* Reduced space between items */
 }
 
 html {
@@ -17,6 +47,159 @@ html {
   min-height: 100%;
 }
 
+/* Basic Reset and Global Styles */
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
 body {
-  margin-bottom: 60px;
+  font-family: 'Arial', sans-serif;
+  line-height: 1.5; /* Slightly reduced line height */
+  color: #333;
+  background: linear-gradient(180deg, #a1c4fd 0%, #c2e9fb 100%);
+}
+
+header {
+  background: #003366; /* Deep navy blue */
+  color: #fff;
+}
+
+.navbar {
+  padding: 0.75rem 1.5rem; /* Reduced padding */
+}
+
+.navbar-brand {
+  font-size: 1.4rem; /* Slightly smaller font size */
+  font-weight: bold;
+  color: #fff;
+  text-transform: uppercase;
+}
+
+.navbar-toggler-icon {
+  background-image: url('data:image/svg+xml;base64,...'); /* Custom icon or use default */
+}
+
+.nav-link {
+  color: #fff;
+  font-weight: bold;
+}
+
+.nav-link:hover {
+  color: #d0e9ff; /* Light blue hover effect */
+}
+
+footer {
+  background: #003366;
+  color: #fff;
+  padding: 0.75rem 0; /* Reduced padding */
+}
+
+footer a {
+  color: #d0e9ff;
+  text-decoration: none;
+}
+
+footer a:hover {
+  text-decoration: underline;
+}
+
+.container {
+  margin-top: 1.5rem; /* Reduced margin */
+  margin-bottom: 1.5rem; /* Reduced margin */
+  padding: 0 0.75rem; /* Reduced padding */
+}
+
+main {
+  background: #fff;
+  border-radius: 7px; /* Slightly smaller border radius */
+  padding: 1.5rem; /* Reduced padding */
+  box-shadow: 0 3px 5px rgba(0, 0, 0, 0.1); /* Reduced shadow */
+}
+
+/* Wave Pattern Background */
+body::before {
+  content: "";
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 180px; /* Reduced height */
+  background-size: cover;
+  background-repeat: no-repeat;
+  z-index: -1;
+}
+
+.navbar-nav .nav-item {
+  margin-right: 0.8rem; /* Reduced space between nav items */
+}
+
+.navbar-nav .nav-item:last-child {
+  margin-right: 0;
+}
+
+.navbar-collapse .nav-link {
+  padding: 0.4rem 0.8rem; /* Reduced padding */
+}
+
+.btn {
+  display: inline-flex; /* Ensure buttons are inline with flexible width */
+  border-radius: 4px;
+  background: #004080; /* Dark blue background */
+  color: #fff; /* White text color */
+  border: none;
+  padding: 0.6rem 1.3rem; /* Reduced padding */
+  font-size: 0.9rem; /* Smaller font size */
+  text-align: center; /* Center-align text */
+  transition: background 0.3s, box-shadow 0.3s;
+  cursor: pointer; /* Pointer cursor on hover */
+  text-decoration: none;
+  margin-bottom: 0.15rem; /* Reduced margin */
+}
+
+.btn:hover {
+  background: #003366; /* Even darker blue */
+}
+
+.btn:focus {
+  box-shadow: 0 0 0 0.1rem #a1c4fd, 0 0 0 0.25rem #004080;
+}
+
+/* Form Controls */
+.form-control {
+  border: 1px solid #004080; /* Dark blue */
+  border-radius: 4px;
+  padding: 0.4rem; /* Reduced padding */
+  font-size: 0.9rem; /* Smaller font size */
+}
+
+.form-control:focus {
+  border-color: #003366;
+  box-shadow: 0 0 0 0.1rem rgba(0, 51, 102, 0.25);
+}
+
+table {
+  width: 100%; /* Ensure table takes full width of its container */
+  border-collapse: collapse; /* Collapse borders for a cleaner look */
+}
+
+th {
+  text-align: center; /* Center-align text within table headers */
+  padding: 0.6rem 0.8rem; /* Reduced padding */
+  background-color: #f2f2f2; /* Light background color for headers */
+  border-bottom: 1px solid #ddd; /* Reduced border thickness */
+}
+
+td {
+  padding: 0.6rem 0.8rem; /* Reduced padding */
+  border-bottom: 1px solid #ddd; /* Reduced border thickness */
+}
+
+/* Optional: Add styling for the table itself */
+table {
+  border: 1px solid #ddd; /* Border around the table */
+  border-radius: 4px; /* Rounded corners for the table */
+  margin: 0.75rem 0; /* Reduced margin around the table */
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1); /* Reduced shadow */
 }

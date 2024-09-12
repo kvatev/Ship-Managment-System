@@ -1,0 +1,28 @@
+﻿@model ShipManagement.Models.Users.ConfirmDeleteViewModel
+
+<html>
+<body>
+<h1>Менижиране на потребители</h1>
+<h2>Изтриване на потребител с конфликтни задачи</h2>
+<hr/>
+
+<h3>Сигурни ли сте че желаете да изтриете потребителя <strong>@Model.User.UserName</strong> и взички асоциирани задачи?</h3>
+
+@if (Model.Tasks.Any())
+{
+<h4>Този потребител има следните задачи:</h4>
+<ul>
+    @foreach (var task in Model.Tasks)
+    {
+    <li>@task.Title - @task.Description</li>
+    }
+</ul>
+}
+
+<form asp-action="ConfirmDeleteConfirmed" method="post">
+    <input type="hidden" name="userId" value="@Model.User.Id" />
+    <button type="submit" class="btn btn-danger">Да, изтрий този потребител и всички задачи</button>
+    <a href="@Url.Action("Index", "UserManagement")" class="btn btn-secondary">Отказ</a>
+</form>
+</body>
+</html>
