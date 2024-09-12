@@ -1,11 +1,48 @@
-/build/
-*.o
-*.out
+# Rider project files
+.idea/
+*.sln.iml
 
+# User-specific files
+*.rsuser
+*.suo
+*.user
+*.userosscache
+*.sln.docstates
+
+# Auto-generated Rider files
+.idea/
+.idea_modules/
+.idea/workspace.xml
+.idea/usage.statistics.xml
+.idea/shelf/
+.idea/caches/
+.idea/modules.xml
+.idea/workspace.xml
+
+# Build directories
+bin/
+obj/
+
+# ASP.NET specific files
 *.log
-*.tmp
+*.nupkg
+*.snupkg
+.vs/
+*.vs/
+**/.vs/
 
-/node_modules/
+# NuGet packages
+packages/
+*.nupkg
 
-__pycache__/
-*.py[cod]
+# ASP.NET temporary files
+.vscode/
+tmp/
+temp/
+_Dependencies
+node_modules/
+artifacts/
+out/
+
+# Publish output
+wwwroot/
