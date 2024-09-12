@@ -46,3 +46,6 @@ out/
 
 # Publish output
 wwwroot/
+
+#Credentials
+appsettings.json

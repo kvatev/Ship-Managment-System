@@ -1,7 +1,4 @@
-// Licensed to the .NET Foundation under one or more agreements.
-// The .NET Foundation licenses this file to you under the MIT license.
-#nullable disable
-
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
@@ -31,13 +28,15 @@ namespace ShipManagement.Areas.Identity.Pages.Account
         private readonly IUserEmailStore<IdentityUser> _emailStore;
         private readonly ILogger<RegisterModel> _logger;
         private readonly IEmailSender _emailSender;
+        private readonly IConfiguration _configuration;
 
         public RegisterModel(
             UserManager<IdentityUser> userManager,
             IUserStore<IdentityUser> userStore,
             SignInManager<IdentityUser> signInManager,
             ILogger<RegisterModel> logger,
-            IEmailSender emailSender)
+            IEmailSender emailSender,
+            IConfiguration configuration)
         {
             _userManager = userManager;
             _userStore = userStore;
@@ -45,62 +44,34 @@ namespace ShipManagement.Areas.Identity.Pages.Account
             _signInManager = signInManager;
             _logger = logger;
             _emailSender = emailSender;
+            _configuration = configuration;
         }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         [BindProperty]
         public InputModel Input { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public string ReturnUrl { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public IList<AuthenticationScheme> ExternalLogins { get; set; }
 
-        /// <summary>
-        ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-        ///     directly from your code. This API may change or be removed in future releases.
-        /// </summary>
         public class InputModel
         {
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [EmailAddress]
             [Display(Name = "Email")]
             public string Email { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [Required]
             [StringLength(100, ErrorMessage = "The {0} must be at least {2} and at max {1} characters long.", MinimumLength = 6)]
             [DataType(DataType.Password)]
             [Display(Name = "Password")]
             public string Password { get; set; }
 
-            /// <summary>
-            ///     This API supports the ASP.NET Core Identity default UI infrastructure and is not intended to be used
-            ///     directly from your code. This API may change or be removed in future releases.
-            /// </summary>
             [DataType(DataType.Password)]
             [Display(Name = "Confirm password")]
             [Compare("Password", ErrorMessage = "Паролите не съвпадат")]
             public string ConfirmPassword { get; set; }
         }
-
 
         public async Task OnGetAsync(string returnUrl = null)
         {
@@ -152,7 +123,6 @@ namespace ShipManagement.Areas.Identity.Pages.Account
                 }
             }
 
-            // If we got this far, something failed, redisplay form
             return Page();
         }
 
@@ -160,25 +130,34 @@ namespace ShipManagement.Areas.Identity.Pages.Account
         {
             try
             {
+                var emailSettings = _configuration.GetSection("EmailSettings");
+                var fromEmail = emailSettings["FromEmail"];
+                var smtpHost = emailSettings["SmtpHost"];
+                var smtpPort = int.Parse(emailSettings["SmtpPort"]);
+                var enableSsl = bool.Parse(emailSettings["EnableSsl"]);
+                var username = emailSettings["Username"];
+                var password = emailSettings["Password"];
+
                 MailMessage message = new MailMessage();
                 SmtpClient smtpClient = new SmtpClient();
-                message.From = new MailAddress("kvatevshipmanagement@gmail.com");
+
+                message.From = new MailAddress(fromEmail);
                 message.To.Add(email);
                 message.Subject = subject;
                 message.IsBodyHtml = true;
                 message.Body = confirmLink;
 
-                smtpClient.Port = 587;
-                smtpClient.Host = "smtp.gmail.com";
-
-                smtpClient.EnableSsl = true;
+                smtpClient.Port = smtpPort;
+                smtpClient.Host = smtpHost;
+                smtpClient.EnableSsl = enableSsl;
                 smtpClient.UseDefaultCredentials = false;
-                smtpClient.Credentials = new NetworkCredential("kvatevshipmanagement@gmail.com", "pszz fczu kxzc wkcx");
+                smtpClient.Credentials = new NetworkCredential(username, password);
                 smtpClient.DeliveryMethod = SmtpDeliveryMethod.Network;
-                smtpClient.Send(message);
+                await smtpClient.SendMailAsync(message);
+
                 return true;
             }
-            catch (Exception e)
+            catch (Exception)
             {
                 return false;
             }
