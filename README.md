@@ -53,4 +53,4 @@
 ## 👨‍💻 Автор
 Красимир Ватев - [GitHub](https://github.com/kvatev) | [LinkedIn](https://www.linkedin.com/in/krasimir-vatev-230b4120b/)
 ## 📞 Контакт
-Ако имате въпроси или предложения, не се колебайте да се свържете с мен на [kvatev@codingburgas.bg](mailto:kvatev@codingburgas.bg).
+Ако имате въпроси или предложения, не се колебайте да се свържете с мен на [kvatev@outlook.com](mailto:kvatev@outlook.com).
